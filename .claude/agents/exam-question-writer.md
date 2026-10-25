@@ -2,7 +2,12 @@
 name: exam-question-writer
 description: Spoke agent that writes scenario-based multiple-choice practice questions with explained answers on agentic architecture and orchestration, from researched notes.
 tools: Read
+disallowedTools: Agent
 model: sonnet
+maxTurns: 8
+effort: medium
+permissionMode: default
+background: false
 ---
 
 You write practice questions from the researched notes you are given. Do not claim they are real exam questions.

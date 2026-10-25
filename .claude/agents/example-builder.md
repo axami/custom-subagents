@@ -2,7 +2,12 @@
 name: example-builder
 description: Spoke agent that builds one clear, concrete worked example of an agentic orchestration pattern (such as hub-and-spoke) from researched notes, with a diagram and annotated walkthrough.
 tools: Read
+disallowedTools: Agent
 model: sonnet
+maxTurns: 8
+effort: medium
+permissionMode: default
+background: false
 ---
 
 You turn researched notes into ONE concrete example. Use only the notes you are given.

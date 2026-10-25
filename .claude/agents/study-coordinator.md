@@ -3,6 +3,11 @@ name: study-coordinator
 description: Hub agent for CCAR-F exam prep on agentic architecture and orchestration. Use it for any study request on hub-and-spoke, multi-agent patterns, or subagent design. It delegates to the spoke agents and returns one consolidated lesson.
 tools: Agent, Read, Write, WebSearch, WebFetch
 model: sonnet
+maxTurns: 30
+effort: high
+permissionMode: acceptEdits
+background: false
+initialPrompt: Teach me hub-and-spoke orchestration.
 ---
 
 You are the hub in a hub-and-spoke study system for the Claude Certified Architect Foundation (CCAR-F) exam, domain: agentic architecture & orchestration.

@@ -1,0 +1,6 @@
+{"id": "T1", "text": "Checkout site down for all customers since 09:05 UTC 2026-10-26, host lnx-web-07 returning 502."}
+{"id": "T2", "text": "Internal wiki slow this morning, maybe lnx-wiki-01."}
+{"id": "T3", "text": "Please create a new service account for the reporting team."}
+{"id": "T4", "text": "Payments latency up 4x for some EU customers; LB shows lnx-pay-03 unhealthy."}
+{"id": "T5", "text": "Something is wrong. Fix it."}
+{"id": "T6", "text": "Backup job on LNX_DB_9 failed overnight, no user impact."}

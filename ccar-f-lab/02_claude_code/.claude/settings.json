@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": ["Bash(make test)", "Bash(make lint)", "Bash(git log:*)"],
+    "deny":  ["Bash(rm -rf:*)", "Read(./.env)", "Read(./secrets/**)"]
+  },
+  "hooks": {
+    "PostToolUse": [{"matcher": "Edit|Write", "hooks": [{"type": "command", "command": "ruff check --fix . || true"}]}]
+  }
+}

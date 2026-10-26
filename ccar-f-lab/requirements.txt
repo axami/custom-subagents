@@ -1,0 +1,4 @@
+anthropic>=0.40
+mcp>=1.2
+pydantic>=2.7
+jsonschema>=4.22

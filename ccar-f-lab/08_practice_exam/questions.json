@@ -1,0 +1,542 @@
+[
+ {
+  "domain": "Agentic architecture & SDK",
+  "module": "01",
+  "stem": "Your agent receives a response with stop_reason='tool_use' containing three tool_use blocks. What should the next request contain?",
+  "options": [
+   "A: Three separate user messages, one tool_result each",
+   "B: One user message with three tool_result blocks, each matching its tool_use_id",
+   "C: Only the result of the first tool; the model will re-request the others",
+   "D: An assistant message summarising the results"
+  ],
+  "answer": "B",
+  "explanation": "All tool results for a turn go in a single user message, each referencing the tool_use_id it answers.",
+  "distractors": {
+   "A": "Consecutive user messages/split results break the expected pairing.",
+   "C": "Every tool_use must get a tool_result.",
+   "D": "Tool results are sent in the user role, not assistant."
+  }
+ },
+ {
+  "domain": "Agentic architecture & SDK",
+  "module": "01",
+  "stem": "A tool call fails because the model passed an invalid hostname. Best handling?",
+  "options": [
+   "A: Retry the API call with exponential backoff",
+   "B: Abort the session and show a stack trace",
+   "C: Return a tool_result with is_error=true and an actionable message",
+   "D: Silently return an empty result"
+  ],
+  "answer": "C",
+  "explanation": "Tool errors should be surfaced to the model so it can correct its input; backoff is for transient API errors.",
+  "distractors": {
+   "A": "The API call succeeded; retrying repeats the same bad input.",
+   "B": "Too drastic; model can self-correct.",
+   "D": "Hides failure; model may conclude 'no data' wrongly."
+  }
+ },
+ {
+  "domain": "Agentic architecture & SDK",
+  "module": "01",
+  "stem": "Which API errors are appropriate for automatic retry with backoff?",
+  "options": [
+   "A: 400 invalid_request",
+   "B: 401 authentication",
+   "C: 429 rate limit and 529 overloaded",
+   "D: 403 permission"
+  ],
+  "answer": "C",
+  "explanation": "Rate-limit/overload/5xx are transient; 4xx client errors need a fix, not a retry.",
+  "distractors": {
+   "A": "Same request fails again.",
+   "B": "Credentials must be fixed.",
+   "D": "Permissions must be fixed."
+  }
+ },
+ {
+  "domain": "Agentic architecture & SDK",
+  "module": "01",
+  "stem": "An investigation requires reading 40 MB of logs, but the coordinator must stay focused on the customer conversation. Best pattern?",
+  "options": [
+   "A: Paste the logs into the coordinator's context",
+   "B: Delegate to a subagent with log tools that returns a concise summary",
+   "C: Increase max_tokens",
+   "D: Ask the customer to read the logs"
+  ],
+  "answer": "B",
+  "explanation": "Subagents isolate noisy work in their own context and return only distilled results.",
+  "distractors": {
+   "A": "Floods context, may exceed limits.",
+   "C": "max_tokens controls output length, not input capacity.",
+   "D": "Shifts work to the customer."
+  }
+ },
+ {
+  "domain": "Agentic architecture & SDK",
+  "module": "01",
+  "stem": "The Messages API is stateless. How do you support 'resume yesterday's session'?",
+  "options": [
+   "A: Pass session_id to messages.create",
+   "B: Persist the messages array (or a summary) and resend it",
+   "C: The model remembers by user ID",
+   "D: Use a higher temperature"
+  ],
+  "answer": "B",
+  "explanation": "The application owns conversation state; persist and reload it (the Agent SDK automates this with resume).",
+  "distractors": {
+   "A": "No such parameter on the Messages API.",
+   "C": "No server-side memory between calls.",
+   "D": "Irrelevant."
+  }
+ },
+ {
+  "domain": "Agentic architecture & SDK",
+  "module": "01",
+  "stem": "Your agent occasionally loops calling the same tool forever. Most robust fix?",
+  "options": [
+   "A: Remove the tool",
+   "B: Add a max-iteration/budget guard plus escalation when hit",
+   "C: Lower temperature only",
+   "D: Add 'don't loop' to the user message"
+  ],
+  "answer": "B",
+  "explanation": "Hard loop guards are a reliability control; when tripped, stop and hand off with context.",
+  "distractors": {
+   "A": "Loses capability.",
+   "C": "Doesn't guarantee termination.",
+   "D": "Soft instruction, not a guarantee."
+  }
+ },
+ {
+  "domain": "Claude Code configuration",
+  "module": "02",
+  "stem": "A developer wants their personal preference (verbose explanations) applied in this repo without affecting teammates. Where?",
+  "options": [
+   "A: Project ./CLAUDE.md",
+   "B: ./CLAUDE.local.md or ~/.claude/CLAUDE.md",
+   "C: .claude/rules/verbose.md committed to git",
+   "D: README.md"
+  ],
+  "answer": "B",
+  "explanation": "Personal settings belong in local (git-ignored) or user-level memory.",
+  "distractors": {
+   "A": "Shared with the whole team via git.",
+   "C": "Committed rules affect everyone.",
+   "D": "Not Claude memory."
+  }
+ },
+ {
+  "domain": "Claude Code configuration",
+  "module": "02",
+  "stem": "Terraform guidelines should apply only when Claude edits infra/**/*.tf. Best mechanism?",
+  "options": [
+   "A: Put them in root CLAUDE.md",
+   "B: .claude/rules/terraform.md with a paths: frontmatter glob",
+   "C: A slash command",
+   "D: settings.json deny rule"
+  ],
+  "answer": "B",
+  "explanation": "Path-scoped rules load only for matching files, saving context.",
+  "distractors": {
+   "A": "Loads every session regardless of relevance.",
+   "C": "Requires manual invocation.",
+   "D": "Permissions, not guidance."
+  }
+ },
+ {
+  "domain": "Claude Code configuration",
+  "module": "02",
+  "stem": "A custom skill never triggers even when users ask for exactly its task. Most likely fix?",
+  "options": [
+   "A: Make SKILL.md body longer",
+   "B: Rewrite the frontmatter description to say what it does and WHEN to use it",
+   "C: Rename the folder",
+   "D: Add it to allowed-tools"
+  ],
+  "answer": "B",
+  "explanation": "Claude selects skills based on the description; the body loads only after selection.",
+  "distractors": {
+   "A": "Body isn't read until triggered.",
+   "C": "Name alone rarely fixes matching.",
+   "D": "allowed-tools restricts tools, doesn't drive triggering."
+  }
+ },
+ {
+  "domain": "Claude Code configuration",
+  "module": "02",
+  "stem": "What does `allowed-tools` in a skill's frontmatter do?",
+  "options": [
+   "A: Lists tools the skill may use without extra permission prompts while active",
+   "B: Installs tools",
+   "C: Disables all other skills",
+   "D: Sets the model"
+  ],
+  "answer": "A",
+  "explanation": "It scopes tool access for the skill.",
+  "distractors": {
+   "B": "No installation.",
+   "C": "Unrelated.",
+   "D": "Model is not set there."
+  }
+ },
+ {
+  "domain": "Claude Code configuration",
+  "module": "02",
+  "stem": "You must stop Claude Code from ever reading .env files in the project. Best control?",
+  "options": [
+   "A: Ask in CLAUDE.md",
+   "B: permissions.deny Read(./.env) in .claude/settings.json",
+   "C: Rename .env",
+   "D: Use a skill"
+  ],
+  "answer": "B",
+  "explanation": "Deterministic permission rules beat instructions for hard constraints.",
+  "distractors": {
+   "A": "Advisory, not enforced.",
+   "C": "Fragile.",
+   "D": "Skills don't enforce denial."
+  }
+ },
+ {
+  "domain": "MCP & tool design",
+  "module": "03",
+  "stem": "Claude keeps calling search_tickets with a known ID instead of get_ticket. First fix?",
+  "options": [
+   "A: Merge both into one tool",
+   "B: Improve both descriptions: when to use, when not, referencing the sibling, ID format",
+   "C: Raise temperature",
+   "D: Add a system prompt in all caps"
+  ],
+  "answer": "B",
+  "explanation": "Tool descriptions are the primary signal for selection; differentiate similar tools explicitly.",
+  "distractors": {
+   "A": "Possible later but loses clarity; not the first fix.",
+   "C": "Adds randomness.",
+   "D": "Weaker than fixing the source of ambiguity."
+  }
+ },
+ {
+  "domain": "MCP & tool design",
+  "module": "03",
+  "stem": "Which error response best helps the model recover?",
+  "options": [
+   "A: 'Error'",
+   "B: Full Python stack trace",
+   "C: {error_code:'INVALID_ID', message, retryable:false, suggestion:'use search_tickets'} flagged isError",
+   "D: Empty list"
+  ],
+  "answer": "C",
+  "explanation": "Structured, actionable errors let the model choose the right next step.",
+  "distractors": {
+   "A": "No information.",
+   "B": "Noisy and may leak internals.",
+   "D": "Misleads as 'no results'."
+  }
+ },
+ {
+  "domain": "MCP & tool design",
+  "module": "03",
+  "stem": "In MCP, which primitive is controlled by the model (invoked autonomously)?",
+  "options": [
+   "A: Resources",
+   "B: Prompts",
+   "C: Tools",
+   "D: Roots"
+  ],
+  "answer": "C",
+  "explanation": "Tools are model-controlled; resources are app-controlled; prompts are user-controlled.",
+  "distractors": {
+   "A": "Application attaches them.",
+   "B": "User selects them.",
+   "D": "Client-provided filesystem boundaries."
+  }
+ },
+ {
+  "domain": "MCP & tool design",
+  "module": "03",
+  "stem": "A remote MCP server must serve many users over the network. Transport?",
+  "options": [
+   "A: stdio",
+   "B: Streamable HTTP",
+   "C: Shared file",
+   "D: SMTP"
+  ],
+  "answer": "B",
+  "explanation": "stdio is for local subprocess servers; remote uses HTTP-based transport.",
+  "distractors": {
+   "A": "Local only.",
+   "C": "Not an MCP transport.",
+   "D": "No."
+  }
+ },
+ {
+  "domain": "Structured extraction",
+  "module": "04",
+  "stem": "You need guaranteed schema-shaped output from extraction. Strongest approach?",
+  "options": [
+   "A: 'Reply in JSON' in the prompt",
+   "B: Define a tool with the schema as input_schema and force it via tool_choice",
+   "C: Regex the free text",
+   "D: Lower max_tokens"
+  ],
+  "answer": "B",
+  "explanation": "Forced tool use yields structured input objects matching the schema; still validate.",
+  "distractors": {
+   "A": "Weaker, more parse failures.",
+   "C": "Brittle.",
+   "D": "Truncation risk."
+  }
+ },
+ {
+  "domain": "Structured extraction",
+  "module": "04",
+  "stem": "Validation fails on an extracted record. Best retry?",
+  "options": [
+   "A: Re-send the original request unchanged",
+   "B: Send the specific validation errors back as an is_error tool_result and request a corrected call, capped retries",
+   "C: Retry until it passes",
+   "D: Drop the record"
+  ],
+  "answer": "B",
+  "explanation": "Feeding concrete errors back enables correction; caps prevent infinite loops; then route to human.",
+  "distractors": {
+   "A": "Likely same error.",
+   "C": "Unbounded cost/loop.",
+   "D": "Silent data loss."
+  }
+ },
+ {
+  "domain": "Structured extraction",
+  "module": "04",
+  "stem": "The model invents a start time when the ticket has none, because the field is required. Fix?",
+  "options": [
+   "A: Remove the field",
+   "B: Make it nullable and instruct 'use null if not stated'",
+   "C: Add more examples with times",
+   "D: Set temperature 1"
+  ],
+  "answer": "B",
+  "explanation": "Allow explicit absence so the schema doesn't pressure hallucination.",
+  "distractors": {
+   "A": "Loses data when it exists.",
+   "C": "Reinforces always-fill.",
+   "D": "Increases variance."
+  }
+ },
+ {
+  "domain": "Structured extraction",
+  "module": "04",
+  "stem": "10,000 nightly documents, results needed by morning, cost matters. Best choice?",
+  "options": [
+   "A: Synchronous parallel calls",
+   "B: Message Batches API",
+   "C: Streaming",
+   "D: One giant prompt"
+  ],
+  "answer": "B",
+  "explanation": "Batches are async, cheaper, suited to non-urgent bulk; join results by custom_id.",
+  "distractors": {
+   "A": "Costlier, rate-limit pressure.",
+   "C": "For latency/UX, not cost.",
+   "D": "Context limits & poor accuracy."
+  }
+ },
+ {
+  "domain": "Structured extraction",
+  "module": "04",
+  "stem": "Batch results come back. How do you map them to inputs?",
+  "options": [
+   "A: By position in the results",
+   "B: By custom_id",
+   "C: By timestamp",
+   "D: By token count"
+  ],
+  "answer": "B",
+  "explanation": "Results order isn't guaranteed; custom_id is the join key.",
+  "distractors": {
+   "A": "Order not guaranteed.",
+   "C": "Not reliable.",
+   "D": "Meaningless."
+  }
+ },
+ {
+  "domain": "Prompt engineering",
+  "module": "05",
+  "stem": "A classifier mislabels urgent 'requests' that are actually outages. Most effective prompt change?",
+  "options": [
+   "A: More generic examples of each class",
+   "B: Few-shot examples at the decision boundary with brief reasoning",
+   "C: 'Be careful'",
+   "D: Shorter prompt"
+  ],
+  "answer": "B",
+  "explanation": "Boundary examples teach the distinguishing feature.",
+  "distractors": {
+   "A": "Doesn't address the confusion.",
+   "C": "Vague.",
+   "D": "Removes guidance."
+  }
+ },
+ {
+  "domain": "Prompt engineering",
+  "module": "05",
+  "stem": "Code reviews from Claude are inconsistent between runs. Best improvement?",
+  "options": [
+   "A: Explicit numbered review criteria with severity definitions and output format",
+   "B: Ask it to 'be thorough'",
+   "C: Run once and trust it",
+   "D: Remove the system prompt"
+  ],
+  "answer": "A",
+  "explanation": "Explicit criteria produce consistent, auditable reviews.",
+  "distractors": {
+   "B": "Vague.",
+   "C": "Doesn't fix variance.",
+   "D": "Removes structure."
+  }
+ },
+ {
+  "domain": "Prompt engineering",
+  "module": "05",
+  "stem": "Why use a separate reviewer pass rather than asking the generator to self-check in the same context?",
+  "options": [
+   "A: It is always cheaper",
+   "B: A fresh context with explicit criteria reduces anchoring on the draft's reasoning",
+   "C: The API requires it",
+   "D: It uses fewer tokens"
+  ],
+  "answer": "B",
+  "explanation": "Independent passes avoid self-confirmation bias.",
+  "distractors": {
+   "A": "Usually more expensive.",
+   "C": "Not required.",
+   "D": "Uses more."
+  }
+ },
+ {
+  "domain": "Context management",
+  "module": "06",
+  "stem": "An agent's tool returns 50k tokens of JSON per call and quality degrades after a few calls. Best fix?",
+  "options": [
+   "A: Switch to bigger context model only",
+   "B: Extract key fields into a compact fact record; store raw externally",
+   "C: Repeat the system prompt",
+   "D: Increase max_tokens"
+  ],
+  "answer": "B",
+  "explanation": "Distilling verbose outputs preserves budget and attention.",
+  "distractors": {
+   "A": "Delays the problem.",
+   "C": "Doesn't reduce noise.",
+   "D": "Output limit, not input."
+  }
+ },
+ {
+  "domain": "Context management",
+  "module": "06",
+  "stem": "A long-running task must survive context compaction and restarts. What helps most?",
+  "options": [
+   "A: Scratchpad/progress file with facts, decisions, next steps",
+   "B: Relying on the transcript",
+   "C: Asking the user to remember",
+   "D: Higher temperature"
+  ],
+  "answer": "A",
+  "explanation": "External structured notes persist state across windows/sessions.",
+  "distractors": {
+   "B": "Gets compacted/lost.",
+   "C": "Unreliable.",
+   "D": "Irrelevant."
+  }
+ },
+ {
+  "domain": "Context management",
+  "module": "06",
+  "stem": "When is subagent delegation NOT a good idea?",
+  "options": [
+   "A: Exploring a large codebase",
+   "B: A tiny task needing the parent's full nuanced context and tight back-and-forth",
+   "C: Parallel independent searches",
+   "D: Verbose log review"
+  ],
+  "answer": "B",
+  "explanation": "Delegation costs context handoff; tightly coupled small tasks are better inline.",
+  "distractors": {
+   "A": "Good fit.",
+   "C": "Good fit.",
+   "D": "Good fit."
+  }
+ },
+ {
+  "domain": "Escalation & reliability",
+  "module": "07",
+  "stem": "Customer: 'I'd like to speak to a person.' The issue is fully within policy and solvable. What should the agent do?",
+  "options": [
+   "A: Solve it anyway and ignore the request",
+   "B: Honour the request and escalate with a handoff summary",
+   "C: Argue it can solve it",
+   "D: End the chat"
+  ],
+  "answer": "B",
+  "explanation": "Explicit requests for a human should be honoured; provide context so the human doesn't restart.",
+  "distractors": {
+   "A": "Ignores the customer.",
+   "C": "Poor experience.",
+   "D": "Abandons customer."
+  }
+ },
+ {
+  "domain": "Escalation & reliability",
+  "module": "07",
+  "stem": "A request falls outside written policy (no rule covers SLA credits). The agent is 85% confident what's fair. Action?",
+  "options": [
+   "A: Grant a credit it thinks is fair",
+   "B: Escalate \u2014 policy gap; don't invent policy",
+   "C: Refuse permanently",
+   "D: Ask the customer to decide"
+  ],
+  "answer": "B",
+  "explanation": "Policy gaps require human judgment regardless of model confidence.",
+  "distractors": {
+   "A": "Inventing policy.",
+   "C": "Unhelpful.",
+   "D": "Inappropriate."
+  }
+ },
+ {
+  "domain": "Escalation & reliability",
+  "module": "07",
+  "stem": "An angry customer asks for a password reset, which policy covers and is low-risk. Action?",
+  "options": [
+   "A: Escalate because they're angry",
+   "B: Resolve autonomously, empathetically",
+   "C: Wait for them to calm down",
+   "D: Close the ticket"
+  ],
+  "answer": "B",
+  "explanation": "Sentiment alone isn't an escalation trigger when the action is covered, low-risk and confident.",
+  "distractors": {
+   "A": "Over-escalation defeats automation.",
+   "C": "Delays.",
+   "D": "Unresolved."
+  }
+ },
+ {
+  "domain": "Escalation & reliability",
+  "module": "07",
+  "stem": "The same tool fails 3 times with a permissions error. Best behaviour?",
+  "options": [
+   "A: Keep retrying",
+   "B: Stop, escalate with what was tried and the error",
+   "C: Tell the user it's done",
+   "D: Guess the result"
+  ],
+  "answer": "B",
+  "explanation": "Inability to progress \u2192 escalate transparently with evidence.",
+  "distractors": {
+   "A": "Futile loop.",
+   "C": "Dishonest.",
+   "D": "Fabrication."
+  }
+ }
+]
